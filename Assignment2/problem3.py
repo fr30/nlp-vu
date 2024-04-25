@@ -9,31 +9,67 @@ DO NOT SHARE/DISTRIBUTE SOLUTIONS WITHOUT THE INSTRUCTOR'S PERMISSION
 """
 
 import numpy as np
-from sklearn.preprocessing import normalize
-from generate import GENERATE
-import random
+
+word_to_index = {}
+
+with open("brown_vocab_100.txt", "r") as file:
+    lines = file.readlines()
+    for index, line in enumerate(lines):
+        word_to_index[line.strip()] = index
+
+with open("brown_100.txt", "r") as file:
+    lines = file.readlines()
 
 
-vocab = codecs.open("brown_vocab_100.txt")
+# Replace create_ngram_model() with your own implementation of n-gram
+def create_ngram_model(n, smoothing):
+    shape = (len(word_to_index),) * n
+    counts = np.zeros(shape)
+    last_n_words = np.zeros(n, dtype=int)
 
-#load the indices dictionary
-word_index_dict = {}
-for i, line in enumerate(vocab):
-    #TODO: import part 1 code to build dictionary
+    with open("brown_100.txt", "r") as file:
+        for line in file.readlines():
+            words = [word.lower() for word in line.rstrip().split()]
+            last_n_words[:] = [word_to_index[word] for word in words[:n]]
 
-f = codecs.open("brown_100.txt")
+            for word in words[n:]:
+                counts[tuple(last_n_words)] += 1
+                index = word_to_index[word]
+                last_n_words = np.roll(last_n_words, -1)
+                last_n_words[-1] = index
+
+            counts[tuple(last_n_words)] += 1
+
+    if smoothing:
+        counts += 0.1
+
+    # Avoid division by zero
+    eps = 1e-23
+    probs = counts / (counts.sum(axis=n - 1, keepdims=True) + eps)
+    return probs
 
 
-counts = #TODO: initialize numpy 0s array
+# Code below for evaluation
+def get_last_word_prob(sentence, probs, n):
+    words = [word.lower() for word in sentence.rstrip().split()]
+    word_ids = [word_to_index[word] for word in words[:n]]
+
+    return probs[tuple(word_ids)]
 
 
-#TODO: iterate through file and update counts
+N = 2
+smoothing = False
+probs = create_ngram_model(N, smoothing)
 
-#TODO: normalize counts
+with open("toy_corpus.txt", "r") as file:
+    for line in file.readlines():
+        target_words = [word.lower() for word in line.rstrip().split()]
+        sentprob = 1.0
 
+        for index in range(N, len(target_words) + 1):
+            subsentence = " ".join(target_words[index - N : index])
+            subprob = get_last_word_prob(subsentence, probs, N)
+            sentprob *= subprob
 
-#TODO: writeout bigram probabilities
-
-
-
-f.close()
+        perplexity = 1.0 / np.power(sentprob, 1.0 / (len(target_words) - N + 1))
+        print(perplexity)
