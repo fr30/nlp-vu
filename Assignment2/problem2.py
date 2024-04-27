@@ -9,15 +9,14 @@ DO NOT SHARE/DISTRIBUTE SOLUTIONS WITHOUT THE INSTRUCTOR'S PERMISSION
 """
 import numpy as np
 
-
 word_to_index = {}
 
-with open("brown_vocab_100.txt", "r") as file:
+with open("txt/brown_vocab_100.txt", "r") as file:
     lines = file.readlines()
     for index, line in enumerate(lines):
         word_to_index[line.strip()] = index
 
-with open("brown_100.txt", "r") as file:
+with open("txt/brown_100.txt", "r") as file:
     lines = file.readlines()
 
 
@@ -27,7 +26,7 @@ def create_ngram_model(n, smoothing):
     counts = np.zeros(shape)
     last_n_words = np.zeros(n, dtype=int)
 
-    with open("brown_100.txt", "r") as file:
+    with open("txt/brown_100.txt", "r") as file:
         for line in file.readlines():
             words = [word.lower() for word in line.rstrip().split()]
             last_n_words[:] = [word_to_index[word] for word in words[:n]]
@@ -61,7 +60,7 @@ N = 1
 smoothing = True
 probs = create_ngram_model(N, smoothing)
 
-with open("toy_corpus.txt", "r") as file:
+with open("txt/toy_corpus.txt", "r") as file:
     for line in file.readlines():
         target_words = [word.lower() for word in line.rstrip().split()]
         sentprob = 1.0

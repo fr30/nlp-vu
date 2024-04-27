@@ -8,14 +8,27 @@ NLP A2: N-Gram Language Models
 DO NOT SHARE/DISTRIBUTE SOLUTIONS WITHOUT THE INSTRUCTOR'S PERMISSION
 """
 
-word_index_dict = {}
 
-# TODO: read brown_vocab_100.txt into word_index_dict
+def return_word_index_dict(
+    from_path: str = "txt/brown_vocab_100.txt",
+) -> dict[str, int]:
+    word_index_dict = {}
 
-# TODO: write word_index_dict to word_to_index_100.txt
+    with open(from_path, "r") as f:
+        for i, w in enumerate(f.readlines()):
+            word_index_dict[w.rstrip()] = i
+    return word_index_dict
 
 
+def main() -> None:
+    word_index_dict = return_word_index_dict()
+    with open("output/word_to_index_100.txt", "w") as f:
+        f.write(str(word_index_dict))
 
-print(word_index_dict['all'])
-print(word_index_dict['resolution'])
-print(len(word_index_dict))
+    print(word_index_dict["all"])
+    print(word_index_dict["resolution"])
+    print(len(word_index_dict))
+
+
+if __name__ == "__main__":
+    main()

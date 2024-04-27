@@ -12,12 +12,12 @@ import numpy as np
 
 word_to_index = {}
 
-with open("brown_vocab_100.txt", "r") as file:
+with open("txt/brown_vocab_100.txt", "r") as file:
     lines = file.readlines()
     for index, line in enumerate(lines):
         word_to_index[line.strip()] = index
 
-with open("brown_100.txt", "r") as file:
+with open("txt/brown_100.txt", "r") as file:
     lines = file.readlines()
 
 
@@ -27,7 +27,7 @@ def create_ngram_model(n, smoothing):
     counts = np.zeros(shape)
     last_n_words = np.zeros(n, dtype=int)
 
-    with open("brown_100.txt", "r") as file:
+    with open("txt/brown_100.txt", "r") as file:
         for line in file.readlines():
             words = [word.lower() for word in line.rstrip().split()]
             last_n_words[:] = [word_to_index[word] for word in words[:n]]
@@ -60,9 +60,9 @@ def get_last_word_prob(sentence, probs, n):
 N = 2
 smoothing = False
 probs = create_ngram_model(N, smoothing)
-#writing prob file
+# writing prob file
 
-with open("toy_corpus.txt", "r") as file:
+with open("txt/toy_corpus.txt", "r") as file:
     for line in file.readlines():
         target_words = [word.lower() for word in line.rstrip().split()]
         sentprob = 1.0
@@ -75,11 +75,20 @@ with open("toy_corpus.txt", "r") as file:
         perplexity = 1.0 / np.power(sentprob, 1.0 / (len(target_words) - N + 1))
         print(perplexity)
 
-example_words = [('all', 'the'),
-         ('the', 'jury'),
-         ('the', 'campaign'),
-         ('anonymous','calls')]
-new_file = open('bigram_probs.txt',"w")
-for i,tuple in enumerate(example_words):
-    new_file.write(str(probs[word_to_index[example_words[i][0]],word_to_index[example_words[i][1]]]) + "\n")
+example_words = [
+    ("all", "the"),
+    ("the", "jury"),
+    ("the", "campaign"),
+    ("anonymous", "calls"),
+]
+new_file = open("output/bigram_probs.txt", "w")
+for i, tuple in enumerate(example_words):
+    new_file.write(
+        str(
+            probs[
+                word_to_index[example_words[i][0]], word_to_index[example_words[i][1]]
+            ]
+        )
+        + "\n"
+    )
 new_file.close()

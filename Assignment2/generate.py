@@ -10,7 +10,7 @@ DO NOT SHARE/DISTRIBUTE SOLUTIONS WITHOUT THE INSTRUCTOR'S PERMISSION
 
 import numpy as np
 
-'''
+"""
 HOW TO USE:
 
 word_index_dict: your dictionary mapping words to their indices in the probability vector/matrix
@@ -37,7 +37,7 @@ generator stops itself once it generates "</s>," but this leads to extremely lon
 start_word: only used in the bigram model, the word it starts generating from. I'd suggest using "<s>". 
 
 
-'''
+"""
 
 
 def GENERATE(word_index_dict, probs, model_type, max_words, start_word):
@@ -45,35 +45,33 @@ def GENERATE(word_index_dict, probs, model_type, max_words, start_word):
     index_word_dict = {v: k for k, v in word_index_dict.items()}
     num_words = 0
 
-    #been passed a list of probabilities
+    # been passed a list of probabilities
     if model_type == "unigram":
 
-        #using https://stackoverflow.com/questions/483666/python-reverse-invert-a-mapping
-        while(True):
+        # using https://stackoverflow.com/questions/483666/python-reverse-invert-a-mapping
+        while True:
             wordIndex = np.random.choice(len(word_index_dict), 1, p=list(probs))
             word = index_word_dict[wordIndex[0]]
             returnSTR += word + " "
-            num_words +=1
+            num_words += 1
             if word == "</s>" or num_words == max_words:
                 break
 
         return returnSTR
 
-    #been passed a matrix of probabilities, where each row is the previous word. 
+    # been passed a matrix of probabilities, where each row is the previous word.
     if model_type == "bigram":
         returnSTR = start_word + " "
         prevWord = start_word
-        while(True):
-            wordIndex = np.random.choice(len(word_index_dict), 1, p=list(probs[word_index_dict[prevWord]]))
+        while True:
+            wordIndex = np.random.choice(
+                len(word_index_dict), 1, p=list(probs[word_index_dict[prevWord]])
+            )
             word = index_word_dict[wordIndex[0]]
             returnSTR += word + " "
-            num_words +=1
+            num_words += 1
             prevWord = word
             if word == "</s>" or num_words == max_words:
                 break
 
         return returnSTR
-
-
-
-

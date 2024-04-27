@@ -8,17 +8,17 @@ NLP A2: N-Gram Language Models
 DO NOT SHARE/DISTRIBUTE SOLUTIONS WITHOUT THE INSTRUCTOR'S PERMISSION
 """
 import numpy as np
-from generate import GENERATE
 
+from generate import GENERATE
 
 word_to_index = {}
 
-with open("brown_vocab_100.txt", "r") as file:
+with open("txt/brown_vocab_100.txt", "r") as file:
     lines = file.readlines()
     for index, line in enumerate(lines):
         word_to_index[line.strip()] = index
 
-with open("brown_100.txt", "r") as file:
+with open("txt/brown_100.txt", "r") as file:
     lines = file.readlines()
 
 
@@ -27,7 +27,7 @@ def create_ngram_model(n, smoothing):
     counts = np.zeros(shape)
     last_n_words = np.zeros(n, dtype=int)
 
-    with open("brown_100.txt", "r") as file:
+    with open("txt/brown_100.txt", "r") as file:
         for line in file.readlines():
             words = [word.lower() for word in line.rstrip().split()]
             last_n_words[:] = [word_to_index[word] for word in words[:n]]
