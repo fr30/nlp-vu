@@ -14,7 +14,7 @@ from generate import GENERATE
 import random
 
 
-vocab = codecs.open("brown_vocab_100.txt")
+vocab = codecs.open("txt/brown_vocab_100.txt")
 
 #load the indices dictionary
 word_index_dict = {}
@@ -25,7 +25,7 @@ for i, line in enumerate(vocab):
 
     #TODO: import part 1 code to build dictionary
 
-f = codecs.open("brown_100.txt")
+f = codecs.open("txt/brown_100.txt")
 
 counts = np.zeros((len(word_index_dict),len(word_index_dict)))
 text = f.read()
@@ -45,7 +45,7 @@ example_words = [('all', 'the'),
          ('the', 'jury'),
          ('the', 'campaign'),
          ('anonymous','calls')]
-new_file = open('smooth_probs.txt',"w")
+new_file = open('output/smooth_probs.txt',"w")
 for i,tuple in enumerate(example_words):
     new_file.write(str(probs[word_index_dict[example_words[i][0]],word_index_dict[example_words[i][1]]]) + "\n")
 new_file.close()

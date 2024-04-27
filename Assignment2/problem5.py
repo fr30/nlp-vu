@@ -1,14 +1,16 @@
+#!/usr/bin/env python3
+
 import numpy as np
 
 
 word_to_index = {}
 
-with open("brown_vocab_100.txt", "r") as file:
+with open("txt/brown_vocab_100.txt", "r") as file:
     lines = file.readlines()
     for index, line in enumerate(lines):
         word_to_index[line.strip()] = index
 
-with open("brown_100.txt", "r") as file:
+with open("txt/brown_100.txt", "r") as file:
     lines = file.readlines()
 
 

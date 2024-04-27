@@ -1,14 +1,16 @@
+#!/usr/bin/env python3
+
 import numpy as np
 
 
 word_to_index = {}
 
-with open("brown_vocab_100.txt", "r") as file:
+with open("txt/brown_vocab_100.txt", "r") as file:
     lines = file.readlines()
     for index, line in enumerate(lines):
         word_to_index[line.strip()] = index
 
-with open("brown_100.txt", "r") as file:
+with open("txt/brown_100.txt", "r") as file:
     lines = file.readlines()
 
 
@@ -17,7 +19,7 @@ def create_ngram_model(n):
     counts = np.zeros(shape)
     last_n_words = np.zeros(n, dtype=int)
 
-    with open("brown_100.txt", "r") as file:
+    with open("txt/brown_100.txt", "r") as file:
         for line in file.readlines():
             words = [word.lower() for word in line.rstrip().split()]
             last_n_words[:] = [word_to_index[word] for word in words[:n]]
@@ -38,7 +40,7 @@ count1 = create_ngram_model(1)
 count2 = create_ngram_model(2)
 pmi = np.zeros((n, n))
 
-with open("brown_100.txt", "r") as file:
+with open("txt/brown_100.txt", "r") as file:
     for line in file.readlines():
         words = [word.lower() for word in line.rstrip().split()]
         index = [word_to_index[word] for word in words]
