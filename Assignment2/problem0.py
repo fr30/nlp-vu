@@ -13,6 +13,7 @@ from nltk.corpus.reader.tagged import CategorizedTaggedCorpusReader
 from nltk.corpus.util import LazyCorpusLoader
 
 NLTK_DATA = os.path.join(os.path.dirname(os.path.realpath(__file__)), "nltk_data")
+IMG_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)), "imgs")
 
 nltk.data.path.append(NLTK_DATA)
 
@@ -84,10 +85,17 @@ def plot_freq_curves(word_to_freq: dict[str, int], fname: str) -> None:
         ax.set_ylabel("Frequency")
         ax.set_xlabel("Word rank")
         ax.legend()
+
+    if not os.path.exists(IMG_FOLDER):
+        os.mkdir(IMG_FOLDER)
+
+    fname = os.path.join(IMG_FOLDER, fname)
     fig.savefig(fname)
+    print(f"\nImage saved to {fname}")
 
 
 def main(_corpus: LazyCorpusLoader, category: Optional[str] = None):
+    # Make sure corpus is downloaded, and try to do it if it's not 
     corpus = ensure_loaded(_corpus)
 
     print(f"Running stats on '{corpus.root}' ...\n")
@@ -96,6 +104,7 @@ def main(_corpus: LazyCorpusLoader, category: Optional[str] = None):
         assert category in corpus.categories()
         print(f"Running stats for category {category}\n")
 
+    # Calculate some stats
     tokens = corpus.words(categories=category)
     sents = corpus.sents(categories=category)
     words = extract_words(tokens)
@@ -104,6 +113,7 @@ def main(_corpus: LazyCorpusLoader, category: Optional[str] = None):
     av_word_len = sum(len(w) for w in words) / len(words)
     pos_tags_freq = return_pos_to_freq(corpus.tagged_words(categories=category))
 
+    # Cout stats
     print(f"Number of tokens: {len(tokens)}")
     print(f"Number of types: {len(set(tokens))}")
     print(f"Number of words: {len(words)}")
@@ -113,15 +123,16 @@ def main(_corpus: LazyCorpusLoader, category: Optional[str] = None):
         f"10 most frequent POS tags: {dict(sorted(pos_tags_freq.items(), key=lambda x: x[1], reverse=True)[:10]).keys()}"
     )
 
-    fname=f"imgs/freq_curves_{get_corpus_name(corpus)}{"_" + category if category else ""}.png"
+    # Save image of frequency curves (linear-linear and log-log)
+    fname=f"freq_curves_{get_corpus_name(corpus)}{"_" + category if category else ""}.png"
     plot_freq_curves( return_word_to_freq(words), fname=fname)
 
-    print(f"\nImage saved to {fname}")
 
 
 if __name__ == "__main__":
+    # Parse arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument("-n", "--name", type=str, help="Corpus name", required=True)
+    parser.add_argument("-n", "--name", type=str, help="Corpus name. 'brown' is default", default="brown")
     parser.add_argument("-c", "--category", type=str, help="Corpus category. Omit for all", required=False)
 
     args = parser.parse_args()
@@ -129,7 +140,7 @@ if __name__ == "__main__":
     corpus_name = args.name
     category = args.category
 
-    # Load corups
+    # Load corups (if name is invalid raise ImportError)
     corpus = getattr(nltk.corpus, corpus_name)
 
     # Run the things
